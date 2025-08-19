@@ -3,151 +3,132 @@
 #include <iostream>
 #include <string>
 
-#define TAM 10
+#define TAM 4
 
 using namespace std;
 
 int main() {
-    cout << "Sistema de Cadastro, Pesquisa e Ordenacao de Nomes" << endl;
-    string nomes[TAM];
-    int quantidadeInseridos = 0;
-    int opcao;
-    string nome;
+    cout << "=== Sistema de Cadastro, Busca e Ordenacao de Nomes ===" << endl;
+    string vetorNomes[TAM];
+    int totalCadastrados = 0;
+    int escolha;
+    string nomeDigitado;
     
     do {
-        cout << "\n=============== MENU ===============" << endl;
-        cout << "1 - Cadastrar nome" << endl;
-        cout << "2 - Listar nomes" << endl;
-        cout << "3 - Pesquisar nome" << endl;
+        cout << "\n--- MENU PRINCIPAL ---" << endl;
+        cout << "1 - Inserir nomes" << endl;
+        cout << "2 - Exibir nomes" << endl;
+        cout << "3 - Buscar nome" << endl;
         cout << "4 - Ordenar nomes" << endl;
-        cout << "5 - Sair" << endl;
-        cout << "Opcao: ";
-        cin >> opcao;
-        cin.ignore(); // Limpa buffer
- 
-        switch (opcao) {
+        cout << "5 - Finalizar" << endl;
+        cout << "Digite sua opcao: ";
+        cin >> escolha;
+        fflush(stdin);
+
+        switch (escolha)
+        {
         case 1:
-            cout << "\nCadastrar nome..." << endl;
-            if (quantidadeInseridos >= TAM) {
-                cout << "Vetor lotado! Maximo " << TAM << " nomes." << endl;
+            cout << "\nInserir nomes no sistema..." << endl;
+            if (totalCadastrados == TAM) {
+                cout << "Sistema cheio! Limite de nomes atingido." << endl;
             } else {
-                cout << "Nome: ";
-                getline(cin, nome);
-                
-                // Verifica se o nome já existe
-                bool jaExiste = false;
-                for (int i = 0; i < quantidadeInseridos; i++) {
-                    if (nomes[i] == nome) {
-                        jaExiste = true;
-                        break;
+                for (int i = 0; i < TAM; i++) {
+                    cout << "Digite o nome: ";
+                    getline(cin, nomeDigitado);
+                    fflush(stdin);
+                    
+                    if (nomeDigitado.empty()) {
+                        cout << "Nome nao pode estar vazio!" << endl;
+                        i--;
+                        continue;
                     }
-                }
-                
-                if (jaExiste) {
-                    cout << "Nome ja cadastrado!" << endl;
-                } else {
-                    nomes[quantidadeInseridos] = nome;
-                    quantidadeInseridos++;
-                    cout << "Nome cadastrado com sucesso!" << endl;
+
+                    vetorNomes[totalCadastrados] = nomeDigitado;
+                    totalCadastrados++;
+                    cout << "Nome inserido com sucesso!" << endl;
                 }
             }
             break;
             
         case 2:
-            cout << "\nListar nomes..." << endl;
-            if (quantidadeInseridos == 0) {
-                cout << "Nenhum nome cadastrado." << endl;
+            cout << "\nExibir nomes cadastrados..." << endl;
+            if (totalCadastrados == 0) {
+                cout << "Nenhum nome foi cadastrado ainda." << endl;
             } else {
-                cout << "========================" << endl;
-                cout << "     LISTA DE NOMES     " << endl;
-                cout << "========================" << endl;
-                for (int i = 0; i < quantidadeInseridos; i++) {
-                    cout << (i + 1) << ". " << nomes[i] << endl;
+                cout << "Lista de nomes:" << endl;
+                for (int i = 0; i < totalCadastrados; i++) {
+                    cout << (i+1) << "- " << vetorNomes[i] << endl;
                 }
-                cout << "========================" << endl;
-                cout << "Total de registros: " << quantidadeInseridos << endl;
+                cout << "===================" << endl;
+                cout << "Quantidade total: " << totalCadastrados << endl;
             }
             break;
             
         case 3:
-            cout << "\nPesquisar nome..." << endl;
-            if (quantidadeInseridos == 0) {
-                cout << "Nenhum nome cadastrado para pesquisar." << endl;
+            cout << "\nBuscar nome no sistema..." << endl;
+            if (totalCadastrados == 0) {
+                cout << "Sistema vazio... nao eh possivel realizar busca." << endl;
             } else {
-                cout << "Digite o nome ou parte do nome: ";
-                getline(cin, nome);
+                cout << "Nome ou parte do nome para buscar: ";
+                getline(cin, nomeDigitado);
+                int totalEncontrados = 0;
                 
-                int quantidadeEncontrados = 0;
-                cout << "\nResultados da pesquisa por '" << nome << "':" << endl;
-                cout << "================================" << endl;
-                
-                for (int i = 0; i < quantidadeInseridos; i++) {
-                    // Verifica se find() NÃO retorna npos
-                    if (nomes[i].find(nome) != string::npos) {
-                        cout << (quantidadeEncontrados + 1) << ". " << nomes[i] << endl;
-                        quantidadeEncontrados++;
+                cout << "Resultados da busca:" << endl;
+                for (int i = 0; i < totalCadastrados; i++) {
+                    if (vetorNomes[i].find(nomeDigitado) != string::npos) {
+                        cout << "-> " << vetorNomes[i] << endl;
+                        totalEncontrados++;
                     }
                 }
-                
-                cout << "================================" << endl;
-                if (quantidadeEncontrados == 0) {
-                    cout << "Nenhum nome encontrado com '" << nome << "'" << endl;
+                cout << "===================" << endl;
+                if (totalEncontrados == 0) {
+                    cout << "Nenhum nome encontrado com: " << nomeDigitado << endl;
                 } else {
-                    cout << "Total encontrado: " << quantidadeEncontrados << " nomes" << endl;
+                    cout << "Quantidade encontrada: " << totalEncontrados << endl;
                 }
             }
             break;
             
         case 4:
-            cout << "\nOrdenar nomes usando Bubble Sort..." << endl;
-            if (quantidadeInseridos <= 1) {
+            cout << "\nOrdenar nomes alfabeticamente..." << endl;
+            if (totalCadastrados <= 1) {
                 cout << "Precisa de pelo menos 2 nomes para ordenar." << endl;
             } else {
                 cout << "Nomes antes da ordenacao:" << endl;
-                for (int i = 0; i < quantidadeInseridos; i++) {
-                    cout << (i + 1) << ". " << nomes[i] << endl;
+                for (int i = 0; i < totalCadastrados; i++) {
+                    cout << (i+1) << "- " << vetorNomes[i] << endl;
                 }
                 
-                cout << "\nAplicando Bubble Sort..." << endl;
+                cout << "\nAplicando metodo Bubble Sort..." << endl;
                 
-                // ALGORITMO BUBBLE SORT
-                for (int i = 0; i < quantidadeInseridos - 1; i++) {
-                    for (int j = 0; j < quantidadeInseridos - i - 1; j++) {
-                        // Compara nomes[j] com nomes[j+1]
-                        if (nomes[j] > nomes[j + 1]) {
-                            // Troca os elementos
-                            string temp = nomes[j];
-                            nomes[j] = nomes[j + 1];
-                            nomes[j + 1] = temp;
+                for (int i = 0; i < totalCadastrados - 1; i++) {
+                    for (int j = 0; j < totalCadastrados - i - 1; j++) {
+                        if (vetorNomes[j] > vetorNomes[j + 1]) {
+                            string temp = vetorNomes[j];
+                            vetorNomes[j] = vetorNomes[j + 1];
+                            vetorNomes[j + 1] = temp;
                         }
                     }
                 }
                 
                 cout << "\nNomes ordenados em ordem alfabetica:" << endl;
-                cout << "====================================" << endl;
-                for (int i = 0; i < quantidadeInseridos; i++) {
-                    cout << (i + 1) << ". " << nomes[i] << endl;
+                for (int i = 0; i < totalCadastrados; i++) {
+                    cout << (i+1) << "- " << vetorNomes[i] << endl;
                 }
-                cout << "====================================" << endl;
-                cout << "Ordenacao concluida com sucesso!" << endl;
+                cout << "===================" << endl;
+                cout << "Ordenacao realizada com sucesso!" << endl;
             }
             break;
             
         case 5:
-            cout << "\nSaindo do programa..." << endl;
+            cout << "\nEncerrando o programa..." << endl;
             break;
             
         default:
-            cout << "Opcao invalida! Tente novamente." << endl;
+            cout << "Opcao nao reconhecida. Tente novamente." << endl;
             break;
         }
-        
-        if (opcao != 5) {
-            cout << "\nPressione Enter para continuar...";
-            cin.get();
-        }
-        
-    } while (opcao != 5);
+    } while (escolha != 5);
     
     return 0;
 }
