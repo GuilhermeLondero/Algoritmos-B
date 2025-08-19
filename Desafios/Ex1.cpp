@@ -3,84 +3,74 @@
 #include <iostream>
 #include <string>
 
-#define TAM 10
+#define TAM 4
 
 using namespace std;
 
 int main() {
-    cout << "Sistema de Cadastro de Nomes" << endl;
-    string nomes[TAM];
-    int quantidadeInseridos = 0;
-    int opcao;
-    string nome;
+    cout << "=== Sistema de Cadastro de Nomes ===" << endl;
+    string vetorNomes[TAM];
+    int totalCadastrados = 0;
+    int escolha;
     
     do {
-        cout << "\n=============== MENU ===============" << endl;
-        cout << "1 - Cadastrar nome" << endl;
-        cout << "2 - Listar nomes" << endl;
-        cout << "3 - Sair" << endl;
-        cout << "Opcao: ";
-        cin >> opcao;
-        cin.ignore();
- 
-        switch (opcao) {
+        cout << "\n--- MENU PRINCIPAL ---" << endl;
+        cout << "1 - Inserir nomes" << endl;
+        cout << "2 - Exibir nomes" << endl;
+        cout << "3 - Finalizar" << endl;
+        cout << "Digite sua opcao: ";
+        cin >> escolha;
+        fflush(stdin);
+
+        switch (escolha)
+        {
         case 1:
-            cout << "\nCadastrar nome..." << endl;
-            if (quantidadeInseridos >= TAM) {
-                cout << "Vetor lotado! Maximo " << TAM << " nomes." << endl;
+            cout << "\nInserir nomes no sistema..." << endl;
+            if (totalCadastrados == TAM) {
+                cout << "Sistema cheio! Limite de nomes atingido." << endl;
             } else {
-                cout << "Nome: ";
-                getline(cin, nome);
-                
-                bool jaExiste = false;
-                for (int i = 0; i < quantidadeInseridos; i++) {
-                    if (nomes[i] == nome) {
-                        jaExiste = true;
-                        break;
+                string nomeDigitado;
+                for (int i = 0; i < TAM; i++) {
+                    cout << "Digite o nome: ";
+                    getline(cin, nomeDigitado);
+                    fflush(stdin);
+                    
+                    if (nomeDigitado.empty()) {
+                        cout << "Nome nao pode estar vazio!" << endl;
+                        i--;
+                        continue;
                     }
-                }
-                
-                if (jaExiste) {
-                    cout << "Nome ja cadastrado!" << endl;
-                } else {
-                    nomes[quantidadeInseridos] = nome;
-                    quantidadeInseridos++;
-                    cout << "Nome cadastrado com sucesso!" << endl;
+
+                    vetorNomes[totalCadastrados] = nomeDigitado;
+                    totalCadastrados++;
+                    cout << "Nome inserido com sucesso!" << endl;
                 }
             }
             break;
             
         case 2:
-            cout << "\nListar nomes..." << endl;
-            if (quantidadeInseridos == 0) {
-                cout << "Nenhum nome cadastrado." << endl;
+            cout << "\nExibir nomes cadastrados..." << endl;
+            if (totalCadastrados == 0) {
+                cout << "Nenhum nome foi cadastrado ainda." << endl;
             } else {
-                cout << "========================" << endl;
-                cout << "     LISTA DE NOMES     " << endl;
-                cout << "========================" << endl;
-                for (int i = 0; i < quantidadeInseridos; i++) {
-                    cout << (i + 1) << ". " << nomes[i] << endl;
+                cout << "Lista de nomes:" << endl;
+                for (int i = 0; i < totalCadastrados; i++) {
+                    cout << (i+1) << "- " << vetorNomes[i] << endl;
                 }
-                cout << "========================" << endl;
-                cout << "Total de registros: " << quantidadeInseridos << endl;
+                cout << "===================" << endl;
+                cout << "Quantidade total: " << totalCadastrados << endl;
             }
             break;
             
         case 3:
-            cout << "\nSaindo do programa..." << endl;
+            cout << "\nEncerrando o programa..." << endl;
             break;
             
         default:
-            cout << "Opcao invalida! Tente novamente." << endl;
+            cout << "Opcao nao reconhecida. Tente novamente." << endl;
             break;
         }
-        
-        if (opcao != 3) {
-            cout << "\nPressione Enter para continuar...";
-            cin.get();
-        }
-        
-    } while (opcao != 3);
+    } while (escolha != 3);
     
     return 0;
 }
