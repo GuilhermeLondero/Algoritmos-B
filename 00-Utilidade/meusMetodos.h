@@ -1,5 +1,22 @@
+#include <string>
 #include <sstream>
 #include <fstream>
+#include <bits/stdc++.h>
+using namespace std;
+
+void split(string vetor[], string str, string deli = " ")
+{        
+    int start = 0;
+    int end = str.find(deli);
+    int i = 0;
+    while (end != -1) {
+        vetor[i] = str.substr(start, end - start);
+        i++;
+        start = end + deli.size();
+        end = str.find(deli, start);
+    }
+    vetor[i] = str.substr(start, end - start);
+}
 
 
 bool inserirLista(string nome, string listaNomes[], int *quantidadeNomes, int tamanho) {
@@ -52,6 +69,89 @@ int conectarBase(string listaNomes[], string nomeBaseDados, int tamanho) {
     return quantidadeNomes;
 }
 
+void listarPessoas(Pessoa vetor[], int qtd_pessoas){
+    for(int i=0; i < qtd_pessoas; i++){
+        cout << "Nome: " << vetor[i].nome << " - Email: " << vetor[i].email << endl;
+    }
+}
+
+int cadastrarPessoa(Pessoa vetor[], int tamanho, int qtd_pessoas){
+    if(tamanho == qtd_pessoas){
+        cout << "Vetor cheio!" << endl;
+        return qtd_pessoas;
+    }
+    string nome;
+    string email;
+    cout << "Nome: ";
+    getline(cin, nome);
+    cout << "Email: ";
+    cin >> email;
+    //validar se nome e email ja estao cadastrados
+    vetor[qtd_pessoas].nome = nome;
+    vetor[qtd_pessoas].email = email;
+    qtd_pessoas++;
+    //gravar a pessoa no arquivo
+    gravarPessoaBase(nome, email, baseDados);
+    return qtd_pessoas;
+}
+
+void menu(Pessoa vetor[], int tamanho, int qtd_pessoas){
+    int opcao;
+    do{
+        cout << "MENU\n" << endl;
+        cout << "1 - Listar pessoas" << endl;
+        cout << "2 - Cadastrar pessoa" << endl;
+        cout << "3 - Sair" << endl;
+        cout << "Opcao: ";
+        cin >> opcao;
+
+        switch(opcao){
+            case 1:
+                listarPessoas(vetor, qtd_pessoas);
+                break;
+            case 2:
+                cout << "Cadastrando pessoa..." << endl;
+                qtd_pessoas = cadastrarPessoa(vetor, tamanho, qtd_pessoas, baseDados);
+                break;
+            case 3:
+                cout << "Saindo..." << endl;
+                break;
+            default:
+                cout << "Opcao invalida!";
+        }
+    } while (opcao != 3);
+}
+
+int conectarBaseNomes(string baseDados, Pessoa vetor[], int tamanho){
+    int qtd_pessoas = 0;
+    ifstream procuradorArquivo; //tipo de arquivo para leitura
+    procuradorArquivo.open(baseDados);
+
+    if (!procuradorArquivo) {
+        cout << "Erro ao abrir o arquivo." << endl;
+        exit(0);
+    }
+    if (qtd_pessoas == tamanho) {
+        cout << "Vetor cheio." << endl;
+        exit(0);
+    }
+
+    //lendo o arquivo linha a linha
+    string linha;
+    string vetorLinha[2];
+    while (!procuradorArquivo.eof()) {
+        getline(procuradorArquivo, linha); //lendo a linha inteira
+        //linha = "nome,email"
+        split(vetorLinha, linha,",");
+        //vetorLinha[0] = nome
+        //vetorLinha[1] = email
+        vetor[qtd_pessoas].nome = vetorLinha[0];
+        vetor[qtd_pessoas].email = vetorLinha[1];
+        qtd_pessoas++;
+    }
+    procuradorArquivo.close();
+    return qtd_pessoas;
+}
 
 int contarVogais(string frase) {
     int totalVogais = 0;
